@@ -43,8 +43,10 @@ export default function App() {
         position="top-right"
         autoClose={2500}
         theme="colored"
-        toastClassName="!bg-[#f6efe7] !text-[#7A0016] !border !border-[#7A0016] !rounded-xl !shadow-lg"
-        bodyClassName="text-sm font-medium"
+        toastClassName={() =>
+          "!bg-[#f6efe7] !text-[#7A0016] !border !border-[#7A0016] !rounded-xl !shadow-lg p-4 flex items-start gap-3 m-4 md:m-0 min-w-[280px] max-w-md"
+        }
+        bodyClassName={() => "!p-0 !m-0 pr-6 text-sm font-medium flex-1 whitespace-normal break-words"}
       />
 
       {/* Footer */}
