@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getCart, getCartTotal, clearCart } from "../../services/cart";
+// 1. Toastify Imports
+import { ToastContainer, toast } from "react-toastify";
+//import "react-toastify/dist/ReactToastify.css";
 
 const API_URL = import.meta.env.VITE_GOOGLE_SHEETS_API_URL;
 const CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
@@ -81,9 +84,13 @@ export default function Checkout() {
       !formData.transactionId ||
       !screenshot
     ) {
-      alert("Please fill all fields & upload screenshot");
+      // 2. Alert badla warning toast me
+      toast.warn("Please fill all fields & upload screenshot");
       return;
     }
+
+    // Process shuru hone par user ko load state batane ke liye loading toast
+    const loadingToast = toast.loading("Processing your order... Please wait.");
 
     try {
       const screenshotUrl = await uploadScreenshot();
@@ -116,17 +123,38 @@ export default function Checkout() {
       });
 
       clearCart();
-      alert(`Order Placed Successfully!\nOrder ID: ${orderId}`);
-      navigate("/");
+      
+      // 3. Loading toast ko success toast me badla aur alert hataya
+      toast.update(loadingToast, {
+        render: `Order Placed Successfully! ID: ${orderId}`,
+        type: "success",
+        isLoading: false,
+        autoClose: 5000,
+      });
+
+      // Thoda sa delay diya taaki user success message dekh sake fir navigate ho
+      setTimeout(() => {
+        navigate("/");
+      }, 2000);
+
     } catch (error) {
       console.error(error);
-      alert("Order Failed");
+      // 4. Loading toast ko error toast me badla
+      toast.update(loadingToast, {
+        render: "Order Failed! Please try again.",
+        type: "error",
+        isLoading: false,
+        autoClose: 4000,
+      });
     }
   };
 
   return (
     // Responsive Wrapper: padding adjusts on mobile vs desktop
     <div className="min-h-screen bg-[#FDF7EE] py-6 sm:py-10 px-4 md:px-8 font-sans transition-all">
+      
+      {/* 5. ToastContainer Component ko layout me add kiya */}
+      <ToastContainer position="top-right" autoClose={3000} theme="colored" />
 
       {/* 📱 Mobile/Tablet: Single Column (Stacked) | 💻 Laptop/Desktop: 2 Columns Layout */}
       <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
@@ -178,23 +206,12 @@ export default function Checkout() {
             <span className="h-[1px] w-12 bg-gray-300"></span>
           </div>
 
-          {/* <button
-            onClick={handlePayment}
-            className="w-full bg-[#7A0016] text-white py-3.5 rounded-xl font-semibold hover:bg-[#610112] transition-all flex items-center justify-center gap-2 shadow-md outline-none cursor-pointer"
-          >
-            <span className="font-serif font-bold text-md tracking-wider">
-              <span className="text-blue-400">G</span>
-              <span className="text-red-400">P</span>
-              <span className="text-yellow-400">a</span>
-              <span className="text-green-400">y</span>
-            </span>
-          </button> */}
           <button
             onClick={handlePayment}
             className="w-full bg-[#7A0016] text-white py-3.5 rounded-xl font-semibold hover:bg-[#610112] transition-all flex items-center justify-center shadow-md outline-none cursor-pointer"
           >
             <img
-              src="upi_logo.webp" // apna image path yaha do
+              src="upi_logo.webp" 
               alt="Google Pay"
               className="h-8 w-auto object-contain"
             />
