@@ -44,9 +44,9 @@ export default function App() {
         autoClose={2500}
         theme="light"
         toastClassName={() =>
-          "bg-[#f6efe7] border border-[#7A0016] text-[#7A0016] rounded-xl shadow-lg"
+          "bg-[#f6efe7] border border-[#7A0016] text-[#7A0016] rounded-xl shadow-lg flex items-start gap-3 p-4 min-w-[300px] max-w-md"
         }
-        bodyClassName={() => "text-sm font-medium"}
+        bodyClassName={() => "text-sm font-medium m-0 p-0 pr-2 flex-1 whitespace-normal break-words leading-relaxed"}
       />
 
       {/* Footer */}
