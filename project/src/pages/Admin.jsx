@@ -134,138 +134,154 @@ export default function AdminPanel() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f6efe7] py-12 px-4">
-      <div className="max-w-6xl mx-auto">
+    <div style={{ backgroundColor: '#FDFBF7', color: '#2C1810', minHeight: '100vh', paddingBottom: '60px', fontFamily: 'sans-serif' }}>
+      
+      {/* Dynamic CSS Media Queries Injection - Mobile aur Desktop sync */}
+      <style>{`
+        .form-layout-container {
+          display: flex;
+          flex-direction: row;
+          gap: 32px;
+          padding: 28px;
+        }
+        .image-section {
+          width: 35%;
+        }
+        .info-section {
+          width: 65%;
+        }
+        .fields-row {
+          display: flex;
+          flex-direction: row;
+          gap: 20px;
+        }
+        .products-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
+          gap: 20px;
+        }
 
-        {/* Header */}
-        <div className="text-center mb-10">
-          <span className="inline-block px-4 py-1.5 bg-[#7a0016]/10 text-[#7a0016] rounded-full text-xs font-semibold tracking-widest uppercase mb-4">
-            Dashboard
-          </span>
-          <h1 className="text-4xl font-serif text-[#3a0a0a]">
-            Cherry Side Admin
-          </h1>
-          <p className="text-[#8c7b7d] mt-2 text-sm">Manage your products</p>
-        </div>
+        @media (max-width: 768px) {
+          .form-layout-container {
+            flex-direction: column !important;
+            gap: 24px !important;
+            padding: 16px !important;
+          }
+          .image-section {
+            width: 100% !important;
+            order: 1 !important;
+          }
+          .info-section {
+            width: 100% !important;
+            order: 2 !important;
+          }
+          .fields-row {
+            flex-direction: column !important;
+            gap: 16px !important;
+          }
+          .products-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 12px !important;
+          }
+        }
+      `}</style>
+      
+      {/* Brand Header */}
+      <header style={{ backgroundColor: '#FAF6F0', paddingTop: '24px', paddingBottom: '20px', textAlign: 'center', borderBottom: '1px solid #F0EAE1' }}>
+        <p style={{ color: '#800020', fontSize: '11px', fontWeight: 'bold', margin: '0 0 6px 0', letterSpacing: '2.5px' }}>DASHBOARD</p>
+        <h1 style={{ fontSize: '28px', fontFamily: 'serif', fontWeight: 'bold', color: '#4A1521', margin: '0' }}>Cherry Side Admin</h1>
+        <p style={{ color: '#9CA3AF', fontSize: '13px', margin: '6px 0 0 0' }}>Manage your products</p>
+      </header>
 
-        {/* Form Card Layout */}
-        <div className="bg-white rounded-3xl border border-[#ebdcd9] shadow-md overflow-hidden max-w-7xl mx-auto mb-12">
-
-          {/* Form Banner Header */}
-          <div className="bg-gradient-to-r from-[#7a0016] via-[#650012] to-[#4a000d] px-8 py-5 flex items-center justify-between">
-            <h2 className="text-white text-lg font-semibold">
+      {/* Main Structural Wrapper */}
+      <main style={{ maxWidth: '1140px', margin: '0 auto', padding: '16px', boxSizing: 'border-box' }}>
+        
+        {/* Form Container Panel */}
+        <div style={{ backgroundColor: '#ffffff', borderRadius: '8px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)', border: '1px solid #EFEAE2', overflow: 'hidden' }}>
+          
+          <div style={{ backgroundColor: '#5C061C', color: '#ffffff', padding: '14px 20px', display: 'flex', justifyContent: 'between', alignItems: 'center' }}>
+            <h2 style={{ fontSize: '15px', fontWeight: '600', margin: '0', letterSpacing: '0.5px' }}>
               {editingId ? "Edit Product" : "Add New Product"}
             </h2>
-
             {editingId && (
               <button
                 type="button"
                 onClick={cancelEdit}
-                className="text-white/80 hover:text-white text-sm flex items-center gap-1 transition"
+                style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.8)', cursor: 'pointer', fontSize: '13px', display: 'flex', alignItems: 'center', gap: '4px' }}
               >
-                <span className="text-lg leading-none">&times;</span>
-                Cancel
+                &times; Cancel
               </button>
             )}
           </div>
 
-          {/* Form Body Wrapper */}
-          <form onSubmit={handleSubmit} className="p-8">
-            <div className="grid grid-cols-1 grid-cols-[35%_65%] gap-8">
-
-              {/* LEFT COLUMN - ASYNC FILE UPLOAD ARCHITECTURE */}
-              <div className="bg-[#faf8f5] border border-[#ebdcd9] rounded-2xl p-5 lg:sticky lg:top-6 h-fit">
-                <h3 className="text-lg font-semibold text-[#5a0010] mb-4">
-                  Product Image
-                </h3>
-
-                <div className="relative h-[450px] w-full rounded-xl overflow-hidden">
-                  <label
-                    htmlFor="productImage"
-                    className="flex flex-col items-center justify-center w-full h-full border-2 border-dashed border-[#d8c7c3] rounded-xl hover:border-[#7a0016] transition-colors cursor-pointer bg-transparent"
-                  >
-                    <input
-                      id="productImage"
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => uploadImage(e.target.files[0])}
-                      className="sr-only"
-                    />
-
-                    {product.image ? (
-                      <img
-                        src={product.image}
-                        alt="Preview"
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div className="flex flex-col items-center justify-center text-[#b8a8aa] px-4 text-center">
-                        <svg
-                          className="w-16 h-16 mb-4"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="1.5"
-                            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                          />
-                        </svg>
-
-                        <p className="font-semibold text-lg">
-                          Upload Product Image
-                        </p>
-
-                        <p className="text-sm mt-2">
-                          JPG, PNG, WEBP
-                        </p>
-                      </div>
-                    )}
-                  </label>
-
-                  {/* Absolute Network Blocking Loading Mesh Overlay */}
-                  {loading && (
-                    <div className="absolute inset-0 bg-white/80 flex items-center justify-center z-20">
-                      <div className="flex flex-col items-center gap-2">
-                        <div className="w-8 h-8 border-2 border-[#7a0016] border-t-transparent rounded-full animate-spin" />
-                        <span className="text-sm text-[#7a0016] font-medium">
-                          Uploading...
-                        </span>
-                      </div>
+          <form onSubmit={handleSubmit} className="form-layout-container">
+            
+            {/* 1. PRODUCT IMAGE CONTAINER */}
+            <div className="image-section" style={{ display: 'flex', flexDirection: 'column', flexShrink: 0, boxSizing: 'border-box' }}>
+              <label style={{ color: '#5C061C', fontWeight: 'bold', fontSize: '13px', marginBottom: '8px' }}>Product Image</label>
+              <div style={{ border: '2px dashed rgba(128, 0, 32, 0.25)', borderRadius: '6px', backgroundColor: '#FAF7F2', padding: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', minHeight: '260px', position: 'relative', flexGrow: 1, boxSizing: 'border-box' }}>
+                
+                {product.image ? (
+                  <img 
+                    src={product.image} 
+                    alt="Preview" 
+                    style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', borderRadius: '4px' }}
+                  />
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <div style={{ width: '48px', height: '48px', color: '#D1D5DB', marginBottom: '12px', backgroundColor: '#ffffff', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #F3F4F6' }}>
+                      <svg className="w-6 h-6" style={{ opacity: 0.4 }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
                     </div>
-                  )}
-                </div>
+                    <p style={{ color: '#374151', fontSize: '13px', fontWeight: '600', margin: '0' }}>Upload Product Image</p>
+                    <p style={{ fontSize: '11px', color: '#9CA3AF', marginTop: '4px', marginBottom: '16px' }}>JPG, PNG, WEBP</p>
+                  </div>
+                )}
+                
+                <label style={{ backgroundColor: '#800020', color: '#ffffff', padding: '8px 18px', borderRadius: '4px', fontSize: '12px', fontWeight: '600', cursor: 'pointer', zIndex: 10 }}>
+                  {loading ? "Uploading..." : "Choose File"}
+                  <input type="file" accept="image/*" onChange={(e) => uploadImage(e.target.files[0])} disabled={loading} style={{ display: 'none' }} />
+                </label>
+
+                {/* Async Loading Overlay */}
+                {loading && (
+                  <div style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(255,255,255,0.8)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 20 }}>
+                    <span style={{ color: '#7a0016', fontSize: '13px', fontWeight: '500' }}>Uploading to Cloudinary...</span>
+                  </div>
+                )}
               </div>
+            </div>
 
-              {/* RIGHT COLUMN - CORE PRODUCT STRUCTURAL FORMS */}
-              <div className="bg-[#faf8f5] border border-[#ebdcd9] rounded-2xl p-6">
-                <h3 className="text-xl font-semibold text-[#5a0010] mb-6">
-                  General Information
-                </h3>
-
-                <div className="space-y-5">
-                  {/* Row 1: Product Name & Category Selector */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    <input
+            {/* 2. GENERAL INFORMATION CONTAINER */}
+            <div className="info-section" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '20px', boxSizing: 'border-box' }}>
+              <div>
+                <h3 style={{ color: '#5C061C', fontWeight: 'bold', fontSize: '13px', margin: '0 0 16px 0', borderBottom: '1px solid #E5E7EB', paddingBottom: '6px' }}>General Information</h3>
+                
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '12px', fontWeight: '600', color: '#4B5563', marginBottom: '4px' }}>Product Name</label>
+                    <input 
                       type="text"
                       name="name"
-                      placeholder="Product Name"
                       value={product.name}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-4 bg-white border border-[#e7d8d4] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#7a0016] transition-all"
+                      placeholder="Enter product name"
+                      style={{ width: '100%', border: '1px solid #D1D5DB', borderRadius: '4px', padding: '10px 14px', fontSize: '13px', outline: 'none', boxSizing: 'border-box', backgroundColor: '#FCFBFA' }}
                     />
+                  </div>
 
-                    <select
+                  <div>
+                    <label style={{ display: 'block', fontSize: '12px', fontWeight: '600', color: '#4B5563', marginBottom: '4px' }}>Select Category</label>
+                    <select 
                       name="category"
                       value={product.category}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-4 bg-white border border-[#e7d8d4] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#7a0016] transition-all"
+                      style={{ width: '100%', border: '1px solid #D1D5DB', borderRadius: '4px', padding: '10px 14px', fontSize: '13px', backgroundColor: '#ffffff', outline: 'none', boxSizing: 'border-box' }}
                     >
-                      <option value="">Select Category</option>
+                      <option value="">Select category</option>
                       <option value="Curated Hampers">Curated Hampers</option>
                       <option value="Handmade Keepsakes">Handmade Keepsakes</option>
                       <option value="Premium Gift Boxes">Premium Gift Boxes</option>
@@ -274,118 +290,109 @@ export default function AdminPanel() {
                     </select>
                   </div>
 
-                  {/* Row 2: Price Specifier & Stock Counters */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    <div className="relative">
-                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#7a0016] font-semibold">
-                        ₹
-                      </span>
-                      <input
+                  {/* Dual row setup for Price & Stock */}
+                  <div className="fields-row">
+                    <div style={{ flex: 1 }}>
+                      <label style={{ display: 'block', fontSize: '12px', fontWeight: '600', color: '#4B5563', marginBottom: '4px' }}>Price (₹)</label>
+                      <input 
                         type="number"
                         name="price"
-                        placeholder="Price"
                         value={product.price}
                         onChange={handleChange}
                         required
-                        className="w-full pl-9 pr-4 py-4 bg-white border border-[#e7d8d4] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#7a0016] transition-all"
+                        placeholder="Enter price"
+                        style={{ width: '100%', border: '1px solid #D1D5DB', borderRadius: '4px', padding: '10px 14px', fontSize: '13px', outline: 'none', boxSizing: 'border-box', backgroundColor: '#FCFBFA' }}
                       />
                     </div>
-
-                    <input
-                      type="number"
-                      name="stock"
-                      placeholder="Stock Quantity"
-                      value={product.stock}
-                      onChange={handleChange}
-                      required
-                      className="w-full px-4 py-4 bg-white border border-[#e7d8d4] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#7a0016] transition-all"
-                    />
+                    <div style={{ flex: 1 }}>
+                      <label style={{ display: 'block', fontSize: '12px', fontWeight: '600', color: '#4B5563', marginBottom: '4px' }}>Stock Quantity</label>
+                      <input 
+                        type="number"
+                        name="stock"
+                        value={product.stock}
+                        onChange={handleChange}
+                        required
+                        placeholder="Enter stock quantity"
+                        style={{ width: '100%', border: '1px solid #D1D5DB', borderRadius: '4px', padding: '10px 14px', fontSize: '13px', outline: 'none', boxSizing: 'border-box', backgroundColor: '#FCFBFA' }}
+                      />
+                    </div>
                   </div>
 
-                  {/* Row 3: Product Context Body Area */}
-                  <textarea
-                    name="description"
-                    placeholder="Product Description..."
-                    value={product.description}
-                    onChange={handleChange}
-                    rows={8}
-                    required
-                    className="w-full px-4 py-4 bg-white border border-[#e7d8d4] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#7a0016] transition-all resize-none"
-                  />
-
-                  {/* Row 4: Transaction Direct Submit Call-To-Action */}
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className="w-full mt-5 py-4 bg-gradient-to-r from-[#7a0016] to-[#5a0010] text-white rounded-xl font-semibold hover:shadow-xl hover:shadow-[#7a0016]/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
-                  >
-                    {editingId ? "Update Product" : "Add Product"}
-                  </button>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '12px', fontWeight: '600', color: '#4B5563', marginBottom: '4px' }}>Product Description</label>
+                    <textarea 
+                      name="description"
+                      value={product.description}
+                      onChange={handleChange}
+                      required
+                      rows="4"
+                      placeholder="Enter product description..."
+                      style={{ width: '100%', border: '1px solid #D1D5DB', borderRadius: '4px', padding: '10px 14px', fontSize: '13px', outline: 'none', resize: 'none', boxSizing: 'border-box', backgroundColor: '#FCFBFA', lineHeight: '1.5' }}
+                    ></textarea>
+                  </div>
                 </div>
               </div>
 
+              {/* Action Submit Button */}
+              <div style={{ marginTop: '12px' }}>
+                <button 
+                  type="submit"
+                  disabled={loading}
+                  style={{ width: '100%', backgroundColor: '#800020', color: '#ffffff', padding: '12px 0', border: 'none', borderRadius: '4px', fontSize: '13px', fontWeight: '600', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.6 : 1 }}
+                >
+                  {editingId ? "Update Product" : "Add Product"}
+                </button>
+              </div>
             </div>
+
           </form>
         </div>
 
-        {/* Dynamic Products Header Feed */}
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h2 className="text-2xl font-serif text-[#3a0a0a]">Products</h2>
-            <p className="text-[#8c7b7d] text-sm mt-1">{products.length} items</p>
+        {/* Lower Grid Products Gallery Section */}
+        <div style={{ marginTop: '32px' }}>
+          <div style={{ marginBottom: '16px' }}>
+            <h2 style={{ fontSize: '18px', fontWeight: 'bold', fontFamily: 'serif', color: '#4A1521', margin: '0' }}>Products</h2>
+            <p style={{ fontSize: '12px', color: '#9CA3AF', margin: '4px 0 0 0' }}>{products.length} Items</p>
           </div>
-          <div className="h-px flex-1 ml-6 bg-gradient-to-r from-[#ebdcd9] to-transparent"></div>
+
+          {products.length === 0 ? (
+            <div style={{ backgroundColor: '#ffffff', borderRadius: '8px', border: '1px solid #EFEAE2', padding: '40px', textCenter: 'center' }}>
+              <p style={{ color: '#8c7b7d', margin: 0, textAlign: 'center' }}>No products yet</p>
+            </div>
+          ) : (
+            <div className="products-grid">
+              {products.map((item) => (
+                <div 
+                  key={item.id} 
+                  style={{ backgroundColor: '#ffffff', borderRadius: '8px', border: '1px solid #EFEAE2', padding: '12px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', boxShadow: '0 2px 4px rgba(0,0,0,0.015)', boxSizing: 'border-box' }}
+                >
+                  {/* Reuse components layout structure */}
+                  <ProductCard product={item} />
+
+                  {/* Actions Utility Layout */}
+                  <div style={{ display: 'flex', gap: '6px', marginTop: '12px' }}>
+                    <button 
+                      type="button" 
+                      onClick={() => handleEdit(item)}
+                      style={{ flex: 1, border: '1px solid #e5d5d0', color: '#7a0016', backgroundColor: '#f6efe7', padding: '6px 0', borderRadius: '4px', fontSize: '11px', fontWeight: '500', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', cursor: 'pointer' }}
+                    >
+                      Edit
+                    </button>
+                    <button 
+                      type="button" 
+                      onClick={() => handleDelete(item.id)}
+                      style={{ flex: 1, border: '1px solid #fecaca', color: '#dc2626', backgroundColor: '#fef2f2', padding: '6px 0', borderRadius: '4px', fontSize: '11px', fontWeight: '500', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', cursor: 'pointer' }}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
-        {/* Main Render Pipeline: Grid View vs Empty View */}
-        {products.length === 0 ? (
-          <div className="bg-white rounded-xl border border-[#ebdcd9] p-16 text-center">
-            <div className="w-16 h-16 bg-[#f6efe7] rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg className="w-8 h-8 text-[#b8a8aa]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-              </svg>
-            </div>
-            <p className="text-[#8c7b7d]">No products yet</p>
-          </div>
-        ) : (
-          /* Yaha Grid Layout wrapper me aapki design apply ho rahi hai */
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-12">
-            {products.map((item) => (
-              <div key={item.id} className="flex flex-col justify-between bg-white p-4 rounded-2xl border border-[#ebdcd9] hover:shadow-lg transition duration-300">
-
-                {/* 2. ProductCard reuse kiya jo exact 'products.jsx' jaisa dikhega */}
-                <ProductCard product={item} />
-
-                {/* Edit aur Delete buttons card ke theek niche clean format me */}
-                <div className="flex items-center gap-2 mt-3">
-                  <button
-                    type="button"
-                    onClick={() => handleEdit(item)}
-                    className="px-3 py-1.5 text-xs font-medium text-[#7a0016] bg-[#f6efe7] border border-[#e5d5d0] rounded-md hover:bg-[#7a0016] hover:text-white transition flex items-center gap-1"
-                  >
-                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                    </svg>
-                    Edit
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => handleDelete(item.id)}
-                    className="px-3 py-1.5 text-xs font-medium text-red-600 bg-red-50 border border-red-200 rounded-md hover:bg-red-600 hover:text-white transition flex items-center gap-1"
-                  >
-                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
-                    Delete
-                  </button>
-                </div>
-
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+      </main>
     </div>
   );
 }

@@ -85,7 +85,7 @@ export default function CollectionsGrid() {
           <div
             key={cat.id}
             className={`cherry-arch-card card-variant-${idx % 3}`}
-            onClick={() => navigate(`/products?category=${cat.slug}`)}
+            onClick={() => navigate('/products')}
           >
             <div className="cherry-arch-image-wrapper">
               <img src={cat.img} alt={cat.name} className="cherry-arch-img" />

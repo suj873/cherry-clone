@@ -38,24 +38,24 @@ export default function Footer() {
               <div className="editorial-links-stack">
                 <span className="stack-group-label">The Showcase</span>
                 <span className="interactive-editorial-link" onClick={() => navigate("/products")}>Gift Collections</span>
-                <span className="interactive-editorial-link" onClick={() => navigate("/custom-packaging")}>Packaging Studio</span>
-                <span className="interactive-editorial-link" onClick={() => navigate("/hampers")}>Curated Hampers</span>
+                <span className="interactive-editorial-link" onClick={() => navigate("/products")}>Packaging Studio</span>
+                <span className="interactive-editorial-link" onClick={() => navigate("/products")}>Curated Hampers</span>
               </div>
 
               <div className="editorial-links-stack">
                 <span className="stack-group-label">Atelier Care</span>
                 <span className="interactive-editorial-link" onClick={() => navigate("/contact")}>Contact Desk</span>
-                <span className="interactive-editorial-link" onClick={() => navigate("/privacy-policy")}>Privacy Policy</span>
-                <span className="interactive-editorial-link" onClick={() => navigate("/terms")}>Terms of Service</span>
+                <span className="interactive-editorial-link" onClick={() => navigate("/policies")}>Privacy Policy</span>
+                {/* <span className="interactive-editorial-link" onClick={() => navigate("/terms")}>Terms of Service</span> */}
               </div>
             </div>
 
             {/* Premium Sophisticated Subscription Console */}
-            <div className="editorial-newsletter-wrap">
+            {/* <div className="editorial-newsletter-wrap">
               <h4 className="newsletter-editorial-title">Join the Inner Journal</h4>
               <p className="newsletter-editorial-desc">Unlock seasonal lookbooks, priority box drops, and bespoke gifting aesthetics.</p>
               
-              <form onSubmit={handleSubscribe} className="editorial-newsletter-form-line">
+              {/* <form onSubmit={handleSubscribe} className="editorial-newsletter-form-line">
                 <input 
                   type="email" 
                   placeholder="Enter your email address to subscribe..." 
@@ -65,8 +65,8 @@ export default function Footer() {
                 <button type="submit" className="editorial-form-submit-arrow-btn">
                   Join Atelier &rarr;
                 </button>
-              </form>
-            </div>
+              </form> */}
+            {/* </div> */} 
 
           </div>
 

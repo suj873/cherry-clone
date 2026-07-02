@@ -86,7 +86,7 @@ export default function CustomPackaging() {
                 <div className="cherry-lux-hover-drawer">
                   <button 
                     className="cherry-lux-action-btn"
-                    onClick={() => navigate(`/product/${box.id}`)}
+                    onClick={() => navigate('/products')}
                   >
                     Select Box Base
                   </button>
@@ -105,7 +105,7 @@ export default function CustomPackaging() {
       {/* <div className="cherry-lux-footer-container">
         <button 
           className="cherry-lux-view-all-btn"
-          onClick={() => navigate("/products?category=custom-packaging")}
+          onClick={() => navigate("/products")}
         >
           View All Packaging Elements
         </button>

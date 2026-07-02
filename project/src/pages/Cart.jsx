@@ -40,7 +40,7 @@ export default function Cart() {
 
   if (cart.length === 0) {
     return (
-      <div className="bg-white min-h-screen">
+      <div className="bg-transparent min-h-screen">
         <div className="max-w-7xl mx-auto px-6 lg:px-12 py-24">
           <h1 className="text-5xl font-light text-[#2b2b2b] mb-8">
             Your cart

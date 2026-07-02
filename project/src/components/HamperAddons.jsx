@@ -4,16 +4,17 @@ import "./HamperAddons.css";
 
 export default function HamperAddons() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState("budget");
+  const [activeTab, setActiveTab] = useState("occasions"); // State tab name updated
 
   const [allProducts, setAllProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
 
-  const budgetHampers = [
-    { id: 201, name: "Luxury Grand Hampers", label: "Premium Selection", max: 1500, img: "/gift1.jpeg" },
-    { id: 202, name: "Hampers Under 999", label: "Mid Tier Elegance", max: 999, img: "/gift2.jpeg" },
-    { id: 203, name: "Hampers Under 699", label: "Thoughtful Budget", max: 699, img: "/gift3.jpeg" },
-    { id: 204, name: "Hampers Under 499", label: "Sweet & Minimalist", max: 499, img: "/gift4.jpeg" },
+  // Pricing hata kar Occasions (Avsar) add kar diye hain
+  const occasionHampers = [
+    { id: 201, name: "Birthday Celebrations", label: "Premium Selection", subtext: "Make their day unforgettable", img: "/gift1.jpeg" },
+    { id: 202, name: "Anniversary Delights", label: "Mid Tier Elegance", subtext: "Celebrate love & togetherness", img: "/gift2.jpeg" },
+    { id: 203, name: "Festive Joy", label: "Thoughtful Selection", subtext: "Spreading warmth & happiness", img: "/gift3.jpeg" },
+    { id: 204, name: "Corporate Gifting", label: "Sweet & Minimalist", subtext: "Professional & elegant styling", img: "/gift4.jpeg" },
   ];
 
   // FETCH PRODUCTS
@@ -35,14 +36,14 @@ export default function HamperAddons() {
     fetchProducts();
   }, []);
 
-  // FILTER FUNCTION (optional UI use)
-  const handleBudgetClick = (maxPrice) => {
+  // FILTER FUNCTION (Ab yeh category ya occasion wise filter kar sakta hai agar zaroorat ho)
+  const handleOccasionClick = (occasionName) => {
     const filtered = allProducts.filter(
-      (p) => Number(p.price) <= maxPrice
+      (p) => p.category === occasionName // Ya fir jo bhi aapke sheet ka filter structural value ho
     );
 
     setFilteredProducts(filtered);
-    setActiveTab("budget");
+    setActiveTab("occasions");
   };
 
   return (
@@ -57,10 +58,10 @@ export default function HamperAddons() {
 
         <div className="cherry-luxury-tab-switch">
           <button
-            className={`lux-switch-btn ${activeTab === "budget" ? "is-active" : ""}`}
-            onClick={() => setActiveTab("budget")}
+            className={`lux-switch-btn ${activeTab === "occasions" ? "is-active" : ""}`}
+            onClick={() => setActiveTab("occasions")}
           >
-            Budget Hampers
+            Curated Hampers
           </button>
         </div>
       </div>
@@ -68,18 +69,16 @@ export default function HamperAddons() {
       {/* BODY */}
       <div className="cherry-addons-render-view">
 
-        {activeTab === "budget" && (
+        {activeTab === "occasions" && (
           <>
             <div className="cherry-budget-deck-grid">
-              {budgetHampers.map((hamper) => (
+              {occasionHampers.map((hamper) => (
                 <div
                   key={hamper.id}
                   className="cherry-budget-clean-card"
                   onClick={() =>
                     navigate(
-                      `/products?maxPrice=${
-                        hamper.id === 201 ? 5000 : hamper.max
-                      }`
+                      '/products'
                     )
                   }
                 >
@@ -91,8 +90,9 @@ export default function HamperAddons() {
                     <span className="budget-meta-label">{hamper.label}</span>
                     <h3 className="budget-primary-name">{hamper.name}</h3>
                     <div className="budget-footer-trigger">
+                      {/* Pricing text ki jagah custom subtext show ho raha hai */}
                       <span className="budget-value-span">
-                        Under ₹{hamper.max}
+                        {hamper.subtext}
                       </span>
                     </div>
                   </div>

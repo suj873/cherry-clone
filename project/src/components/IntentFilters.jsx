@@ -32,7 +32,7 @@ export default function IntentFilters() {
             <div 
               key={person.id} 
               className="intent-audience-glass-card"
-              onClick={() => navigate(`/products?target=${person.slug}`)}
+              onClick={() => navigate('/products')}
             >
               <div className="glass-card-img-frame">
                 <img src={person.img} alt={person.name} />
@@ -60,7 +60,7 @@ export default function IntentFilters() {
             <div 
               key={vibe.id} 
               className="intent-vibe-luxury-box"
-              onClick={() => navigate(`/products?vibe=${vibe.name.toLowerCase().replace(" ", "-")}`)}
+              onClick={() => navigate('/products')}
             >
               <div className="vibe-box-inner-content">
                 <span className="vibe-tag-indicator">{vibe.tag}</span>

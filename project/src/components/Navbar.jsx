@@ -1,11 +1,9 @@
-import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import "./Navbar.css";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Navbar() {
   const navigate = useNavigate();
-  const location = useLocation();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   const giftCategories = [
     "Curated Hampers",
@@ -15,140 +13,149 @@ export default function Navbar() {
     "Scrunchies & Clips"
   ];
 
-  // Jab bhi route change hoga, mobile menu automatic close ho jayega
-  useEffect(() => {
-    setIsMenuOpen(false);
-  }, [location]);
+  const handleNavigation = (path) => {
+    navigate(path);
+    setIsOpen(false);
+  };
 
   return (
-    <header className="cherry-luxury-header">
-
-      {/* Top Strip */}
-      <div className="cherry-top-strip">
+    // 🎨 [FIXED BACKGROUND COLOR] Hataaya puraana color aur apply kiya exact soft aesthetic beige `#F9EAD2`
+    <header className="w-full bg-[#FDF7EE] border-b border-[#f3e1c7] sticky top-0 z-[9999] font-sans">
+      
+      {/* 1. Global Store Ribbon Alert */}
+      <div className="w-full bg-[#7A0016] text-[#fffaf6] text-[11px] font-medium py-[11px] text-center tracking-[2px] uppercase">
         Where gifting feels personal 🍒 Ships Across India
       </div>
 
-      {/* Main Nav */}
-      <div className="cherry-nav-container">
-
-        {/* Brand */}
-        <div className="cherry-brand-block" onClick={() => navigate("/")}>
-          <div className="cherry-logo-transparent-frame">
-            <img
-              src="/cherry_logo.png"
-              alt="Cherry Side"
-              className="cherry-isolated-element"
+      {/* 2. Main Navigation Shell - Left, Center, Right balanced to extreme corners */}
+      <div className="w-full px-6 lg:px-12 h-[90px] flex items-center justify-between">
+        
+        {/* Left: Brand Identity */}
+        <div 
+          className="flex items-center gap-3 cursor-pointer shrink-0" 
+          onClick={() => handleNavigation("/")}
+        >
+          <div className="w-[45px] h-[45px] overflow-hidden flex items-center justify-center">
+            <img 
+              src="/cherry_logo.png" 
+              alt="Cherry Side" 
+              className="w-full h-full object-contain" 
             />
           </div>
-
-          <div className="cherry-brand-text">
+          <h1 className="font-serif text-[22px] font-bold tracking-[1.5px] text-[#7A0016] m-0 whitespace-nowrap">
             CHERRY SIDE
-          </div>
+          </h1>
         </div>
 
-        {/* Center Menu (CSS ke dynamic class 'mobile-open' ke sath linked) */}
-        <div className={`cherry-links-hub ${isMenuOpen ? "mobile-open" : ""}`}>
-          
-          {/* Mobile view ke liye close button menu ke andar */}
-          {isMenuOpen && (
-            <button 
-              className="cherry-mobile-toggle" 
-              style={{ alignSelf: "flex-end", marginBottom: "20px" }}
-              onClick={() => setIsMenuOpen(false)}
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" width="28" height="28">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
-              </svg>
-            </button>
-          )}
-
-          <button className="cherry-menu-item" onClick={() => navigate("/")}>
-            HOME
+        {/* Center: Desktop Navigation Links */}
+        <nav className="hidden md:flex items-center gap-8 h-full">
+          <button 
+            className="bg-none border-none text-[13px] font-semibold uppercase tracking-[1px] text-[#4a4a4a] hover:text-[#7A0016] transition-colors cursor-pointer outline-none"
+            onClick={() => handleNavigation("/")}
+          >
+            Home
           </button>
 
-          {/* Dropdown */}
-          <div className="cherry-menu-item" style={{ position: "relative" }}>
-            GIFTS & HAMPERS ▼
-
-            <div className="cherry-dropdown">
-              {giftCategories.map((item, i) => (
+          {/* Gifts Dropdown */}
+          <div className="relative flex items-center h-full group">
+            <div className="bg-none border-none text-[13px] font-semibold uppercase tracking-[1px] text-[#4a4a4a] flex items-center cursor-pointer outline-none">
+              <span>Gifts & Hampers</span>
+              <span className="text-[8px] ml-1.5 transition-transform group-hover:rotate-180">▼</span>
+            </div>
+            
+            {/* Hover Dropdown Menu */}
+            <div className="absolute top-[70px] left-1/2 -translate-x-1/2 bg-white min-w-[220px] shadow-lg rounded-md py-2 opacity-0 scale-95 pointer-events-none group-hover:opacity-100 group-hover:scale-100 group-hover:pointer-events-auto transition-all duration-200 z-[10000]">
+              {giftCategories.map((category, index) => (
                 <button
-                  key={i}
-                  className="cherry-dropdown-item"
-                  onClick={() =>
-                    navigate(`/products?category=${item.toLowerCase().replace(/\s+/g, "-")}`)
-                  }
+                  key={index}
+                  className="block w-full bg-none border-none text-left px-5 py-2.5 text-[13px] text-[#555555] hover:bg-[#F9EAD2] hover:text-[#7A0016] transition-colors cursor-pointer"
+                  onClick={() => handleNavigation(`/products?category=${category.toLowerCase().replace(" ", "-")}`)}
                 >
-                  {item}
+                  {category}
                 </button>
               ))}
             </div>
           </div>
 
-          <button className="cherry-menu-item" onClick={() => navigate("/products")}>
-            ALL PRODUCTS
-          </button>
-
-          <button className="cherry-menu-item" onClick={() => navigate("/about")}>
-            OUR STORY
-          </button>
-
-          <button className="cherry-menu-item" onClick={() => navigate("/policies")}>
-            POLICIES
-          </button>
-
-        </div>
-
-        {/* Right Icons */}
-        <div className="cherry-utils-group">
-
-          {/* Contact */}
-          <button
-            className="cherry-icon-btn"
-            onClick={() => navigate("/contact")}
-            aria-label="Contact Us"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              width="22"
-              height="22"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="1.5"
-                d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a1.5 1.5 0 0 0 1.5-1.5v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106a1.5 1.5 0 0 0-1.465.417l-.97.97a12.035 12.035 0 0 1-5.357-5.357l.97-.97a1.5 1.5 0 0 0 .417-1.465L8.213 3.852A1.5 1.5 0 0 0 7.122 3H5.75a1.5 1.5 0 0 0-1.5 1.5v2.25Z"
-              />
-            </svg>
-          </button>
-
-          {/* Cart */}
-          <button className="cherry-icon-btn" style={{ position: "relative" }} onClick={() => navigate("/cart")}>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none"
-              viewBox="0 0 24 24" stroke="currentColor" width="22" height="22">
-              <path strokeLinecap="round" strokeLinejoin="round"
-                strokeWidth="1.5" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.3-1.9 1.2 12a1.1 1.1 0 0 1-1.1 1.2H4.2a1.1 1.1 0 0 1-1.1-1.2l1.2-12" />
-            </svg>
-            <span className="cherry-cart-badge">0</span>
-          </button>
-
-          {/* Hamburger Menu Trigger Button (Mobile Par Dikhega) */}
           <button 
-            className="cherry-mobile-toggle"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            aria-label="Toggle Menu"
+            className="bg-none border-none text-[13px] font-semibold uppercase tracking-[1px] text-[#4a4a4a] hover:text-[#7A0016] transition-colors cursor-pointer outline-none"
+            onClick={() => handleNavigation("/products")}
           >
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" width="24" height="24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+            All Products
+          </button>
+          <button 
+            className="bg-none border-none text-[13px] font-semibold uppercase tracking-[1px] text-[#4a4a4a] hover:text-[#7A0016] transition-colors cursor-pointer outline-none"
+            onClick={() => handleNavigation("/about")}
+          >
+            Our Story
+          </button>
+          <button 
+            className="bg-none border-none text-[13px] font-semibold uppercase tracking-[1px] text-[#4a4a4a] hover:text-[#7A0016] transition-colors cursor-pointer outline-none"
+            onClick={() => handleNavigation("/policies")}
+          >
+            Policies
+          </button>
+        </nav>
+
+        {/* Right Side Options Panel - [FIXED LOCATION] Forced to the right-most corners */}
+        <div className="flex items-center gap-5 shrink-0">
+          <button 
+            className="bg-none border-none cursor-pointer text-[#3b3b3b] hover:text-[#7A0016] flex items-center justify-center outline-none transition-colors"
+            onClick={() => handleNavigation("/contact")} 
+            aria-label="Admin"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-[24px] h-[24px]">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
             </svg>
           </button>
 
-        </div>
+          <button 
+            className="bg-none border-none cursor-pointer text-[#3b3b3b] hover:text-[#7A0016] relative flex items-center justify-center outline-none transition-colors"
+            onClick={() => handleNavigation("/cart")} 
+            aria-label="Cart"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-[24px] h-[24px]">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+            </svg>
+          </button>
 
+          {/* Mobile Hamburger Menu Icon */}
+          <button 
+            className="flex flex-col justify-between w-[22px] h-[16px] bg-transparent border-none cursor-pointer p-0 md:hidden"
+            onClick={() => setIsOpen(!isOpen)}
+          >
+            <span className={`w-full h-[2px] bg-[#3b3b3b] transition-all ${isOpen ? 'rotate-45 translate-y-[7px]' : ''}`}></span>
+            <span className={`w-full h-[2px] bg-[#3b3b3b] transition-all ${isOpen ? 'opacity-0' : ''}`}></span>
+            <span className={`w-full h-[2px] bg-[#3b3b3b] transition-all ${isOpen ? '-rotate-45 -translate-y-[7px]' : ''}`}></span>
+          </button>
+        </div>
       </div>
+
+      {/* 3. Mobile Drawer Overlay */}
+      {isOpen && (
+        <div className="absolute top-[135px] left-0 w-full bg-[#F9EAD2] border-b-2 border-[#f3e1c7] shadow-lg z-[999] p-5">
+          <div className="flex flex-col gap-4">
+            <button className="bg-none border-none text-[14px] font-bold uppercase text-[#4a4a4a] text-left w-full outline-none" onClick={() => handleNavigation("/")}>Home</button>
+            
+            <div className="border-l-2 border-[#f3e1c7] pl-3">
+              <span className="block text-[12px] font-bold text-[#7A0016] uppercase mb-2">Gifts & Hampers</span>
+              {giftCategories.map((category, index) => (
+                <button
+                  key={index}
+                  className="block w-full py-1.5 text-[13px] text-[#555555] bg-none border-none text-left"
+                  onClick={() => handleNavigation(`/products?category=${category.toLowerCase().replace(" ", "-")}`)}
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
+
+            <button className="bg-none border-none text-[14px] font-bold uppercase text-[#4a4a4a] text-left w-full outline-none" onClick={() => handleNavigation("/products")}>All Products</button>
+            <button className="bg-none border-none text-[14px] font-bold uppercase text-[#4a4a4a] text-left w-full outline-none" onClick={() => handleNavigation("/about")}>Our Story</button>
+            <button className="bg-none border-none text-[14px] font-bold uppercase text-[#4a4a4a] text-left w-full outline-none" onClick={() => handleNavigation("/policies")}>Policies</button>
+          </div>
+        </div>
+      )}
     </header>
   );
 }

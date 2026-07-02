@@ -1,6 +1,6 @@
 export default function Policies() {
   return (
-    <section className="bg-[#f6efe7] min-h-screen py-16 px-6">
+    <section className="bg-transparent min-h-screen py-16 px-6">
       <div className="max-w-5xl mx-auto">
 
         {/* Header */}

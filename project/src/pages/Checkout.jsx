@@ -1,4 +1,3 @@
-//checkout.jsx
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getCart, getCartTotal, clearCart } from "../../services/cart";
@@ -24,6 +23,7 @@ export default function Checkout() {
 
   const [screenshot, setScreenshot] = useState(null);
 
+  // 🔗 ATTACHMENT LOGIC: ProductCard se add kiya hua data yahan connect hota hai
   useEffect(() => {
     const cartItems = getCart();
 
@@ -45,7 +45,6 @@ export default function Checkout() {
 
   const uploadScreenshot = async () => {
     const data = new FormData();
-
     data.append("file", screenshot);
     data.append("upload_preset", UPLOAD_PRESET);
 
@@ -91,17 +90,15 @@ export default function Checkout() {
       const orderId = `ORD${Date.now()}`;
 
       const orderData = {
-        type: "order", 
+        type: "order",
         orderId,
         customerName: formData.customerName,
         email: formData.email,
         phone: formData.phone,
         address: formData.address,
-
         products: cart
           .map((item) => `${item.name} x ${item.quantity}`)
           .join(", "),
-
         total,
         transactionId: formData.transactionId,
         paymentScreenshot: screenshotUrl,
@@ -119,9 +116,7 @@ export default function Checkout() {
       });
 
       clearCart();
-
       alert(`Order Placed Successfully!\nOrder ID: ${orderId}`);
-
       navigate("/");
     } catch (error) {
       console.error(error);
@@ -130,110 +125,196 @@ export default function Checkout() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 py-10 px-4">
-      <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-8">
-        {/* ORDER SUMMARY */}
-        <div className="bg-white rounded-xl shadow-md p-6">
-          <h2 className="text-2xl font-bold mb-5">
-            Order Summary
-          </h2>
+    // Responsive Wrapper: padding adjusts on mobile vs desktop
+    <div className="min-h-screen bg-[#FDF7EE] py-6 sm:py-10 px-4 md:px-8 font-sans transition-all">
 
-          {cart.map((item) => (
-            <div key={item.id} className="flex justify-between mb-3">
-              <span>
-                {item.name} x {item.quantity}
-              </span>
-              <span>₹{item.price * item.quantity}</span>
+      {/* 📱 Mobile/Tablet: Single Column (Stacked) | 💻 Laptop/Desktop: 2 Columns Layout */}
+      <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+        {/* ==================== CARD 1: ORDER SUMMARY (Left Column) ==================== */}
+        <div className="lg:col-span-5 bg-[#fffaf6] border border-[#f3e1c7] rounded-3xl shadow-sm p-5 sm:p-8 relative">
+
+          <div className="flex justify-between items-center mb-6 border-b border-[#f6efe7] pb-4">
+            <div className="flex items-center gap-2">
+              <span className="text-xl">🍒</span>
+              <h2 className="font-serif text-md sm:text-lg tracking-wider font-bold text-[#7A0016] uppercase">
+                Order Summary
+              </h2>
             </div>
-          ))}
-
-          <hr className="my-4" />
-
-          <div className="flex justify-between text-xl font-bold">
-            <span>Total</span>
-            <span>₹{total}</span>
+            <div className="text-amber-300 text-lg">✦ ✦</div>
           </div>
 
+          {/* Dynamic Products Loop Grid */}
+          <div className="space-y-4 mb-6 max-h-[350px] overflow-y-auto pr-1">
+            {cart.map((item) => (
+              <div key={item.id} className="flex items-center justify-between text-[#3b3b3b] font-medium text-sm gap-2">
+                <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+                  {/* Item Image Box Container */}
+                  <div className="w-[50px] h-[50px] sm:w-[60px] sm:h-[60px] bg-[#fdf5eb] border border-[#f3e1c7] rounded-xl overflow-hidden shrink-0 flex items-center justify-center">
+                    <img
+                      src={item.img || item.image || "/cherry_logo.png"}
+                      alt={item.name}
+                      className="w-full h-full object-cover"
+                      onError={(e) => { e.target.src = "/cherry_logo.png" }}
+                    />
+                  </div>
+                  <span className="truncate text-sm sm:text-base">
+                    {item.name} <span className="text-gray-400 font-light mx-1 text-xs">x</span> {item.quantity}
+                  </span>
+                </div>
+                <span className="font-semibold text-gray-800 shrink-0">₹{item.price * item.quantity}</span>
+              </div>
+            ))}
+          </div>
+
+          <div className="flex justify-between items-center text-md font-bold text-[#7A0016] pt-4 border-t border-[#f6efe7] mb-6">
+            <span className="font-serif tracking-wide uppercase">Total</span>
+            <span className="text-lg sm:text-xl">₹{total}</span>
+          </div>
+
+          <div className="w-full flex items-center justify-center gap-3 my-4 opacity-50">
+            <span className="h-[1px] w-12 bg-gray-300"></span>
+            <span className="text-[10px] tracking-[2px] text-gray-500 font-semibold uppercase whitespace-nowrap">Pay Securely With</span>
+            <span className="h-[1px] w-12 bg-gray-300"></span>
+          </div>
+
+          {/* <button
+            onClick={handlePayment}
+            className="w-full bg-[#7A0016] text-white py-3.5 rounded-xl font-semibold hover:bg-[#610112] transition-all flex items-center justify-center gap-2 shadow-md outline-none cursor-pointer"
+          >
+            <span className="font-serif font-bold text-md tracking-wider">
+              <span className="text-blue-400">G</span>
+              <span className="text-red-400">P</span>
+              <span className="text-yellow-400">a</span>
+              <span className="text-green-400">y</span>
+            </span>
+          </button> */}
           <button
             onClick={handlePayment}
-            className="w-full mt-6 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors"
+            className="w-full bg-[#7A0016] text-white py-3.5 rounded-xl font-semibold hover:bg-[#610112] transition-all flex items-center justify-center shadow-md outline-none cursor-pointer"
           >
-            Pay ₹{total}
+            <img
+              src="upi_logo.webp" // apna image path yaha do
+              alt="Google Pay"
+              className="h-8 w-auto object-contain"
+            />
           </button>
         </div>
 
-        {/* CHECKOUT FORM */}
-        <div className="bg-white rounded-xl shadow-md p-6">
-          <h2 className="text-2xl font-bold mb-5">
-            Delivery Details
-          </h2>
+
+        {/* ==================== CARD 2: DELIVERY DETAILS (Right Column) ==================== */}
+        <div className="lg:col-span-7 bg-[#fffaf6] border border-[#f3e1c7] rounded-3xl shadow-sm p-5 sm:p-8">
+
+          <div className="flex justify-between items-center mb-6 border-b border-[#f6efe7] pb-4">
+            <div className="flex items-center gap-2">
+              <span className="text-xl">🍒</span>
+              <h2 className="font-serif text-md sm:text-lg tracking-wider font-bold text-[#7A0016] uppercase">
+                Delivery Details
+              </h2>
+            </div>
+            <div className="text-amber-300 text-lg">✦ ✦</div>
+          </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            <input
-              type="text"
-              name="customerName"
-              placeholder="Full Name"
-              value={formData.customerName}
-              onChange={handleChange}
-              className="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800"
-              required
-            />
 
-            <input
-              type="email"
-              name="email"
-              placeholder="Email"
-              value={formData.email}
-              onChange={handleChange}
-              className="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800"
-              required
-            />
+            {/* Full Name */}
+            <div className="relative flex items-center w-full border border-[#e0d3c1] bg-[#fffbf7] rounded-xl overflow-hidden focus-within:ring-1 focus-within:ring-[#7A0016] focus-within:border-[#7A0016] transition-all">
+              <span className="pl-4 pr-2 text-gray-400">👤</span>
+              <input
+                type="text"
+                name="customerName"
+                placeholder="Full Name"
+                value={formData.customerName}
+                onChange={handleChange}
+                className="w-full bg-transparent p-3.5 text-sm text-gray-700 outline-none placeholder-gray-400 font-light"
+                required
+              />
+            </div>
 
-            <input
-              type="tel"
-              name="phone"
-              placeholder="Phone Number"
-              value={formData.phone}
-              onChange={handleChange}
-              className="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800"
-              required
-            />
+            {/* Email */}
+            <div className="relative flex items-center w-full border border-[#e0d3c1] bg-[#fffbf7] rounded-xl overflow-hidden focus-within:ring-1 focus-within:ring-[#7A0016] focus-within:border-[#7A0016] transition-all">
+              <span className="pl-4 pr-2 text-gray-400">✉️</span>
+              <input
+                type="email"
+                name="email"
+                placeholder="Email"
+                value={formData.email}
+                onChange={handleChange}
+                className="w-full bg-transparent p-3.5 text-sm text-gray-700 outline-none placeholder-gray-400 font-light"
+                required
+              />
+            </div>
 
-            <textarea
-              name="address"
-              placeholder="Address"
-              rows="4"
-              value={formData.address}
-              onChange={handleChange}
-              className="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800"
-              required
-            />
-            <input
-              type="text"
-              name="transactionId"
-              placeholder="Transaction ID / UTR Number"
-              value={formData.transactionId}
-              onChange={handleChange}
-              className="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800"
-              required
-            />
-            {/* SCREENSHOT UPLOAD */}
-            <input
-              type="file"
-              accept="image/*"
-              onChange={(e) => setScreenshot(e.target.files[0])}
-              className="w-full border border-gray-300 p-3 rounded-lg"
-              required
-            />
+            {/* Phone Number */}
+            <div className="relative flex items-center w-full border border-[#e0d3c1] bg-[#fffbf7] rounded-xl overflow-hidden focus-within:ring-1 focus-within:ring-[#7A0016] focus-within:border-[#7A0016] transition-all">
+              <span className="pl-4 pr-2 text-gray-400">📞</span>
+              <input
+                type="tel"
+                name="phone"
+                placeholder="Phone Number"
+                value={formData.phone}
+                onChange={handleChange}
+                className="w-full bg-transparent p-3.5 text-sm text-gray-700 outline-none placeholder-gray-400 font-light"
+                required
+              />
+            </div>
 
+            {/* Address */}
+            <div className="relative flex items-start w-full border border-[#e0d3c1] bg-[#fffbf7] rounded-xl overflow-hidden focus-within:ring-1 focus-within:ring-[#7A0016] focus-within:border-[#7A0016] transition-all">
+              <span className="pl-4 pt-4 pr-2 text-gray-400">📍</span>
+              <textarea
+                name="address"
+                placeholder="Address"
+                rows="3"
+                value={formData.address}
+                onChange={handleChange}
+                className="w-full bg-transparent p-3.5 text-sm text-gray-700 outline-none placeholder-gray-400 font-light resize-none"
+                required
+              />
+            </div>
+
+            {/* Transaction ID */}
+            <div className="relative flex items-center w-full border border-[#e0d3c1] bg-[#fffbf7] rounded-xl overflow-hidden focus-within:ring-1 focus-within:ring-[#7A0016] focus-within:border-[#7A0016] transition-all">
+              <span className="pl-4 pr-2 text-gray-400">📄</span>
+              <input
+                type="text"
+                name="transactionId"
+                placeholder="Transaction ID / UTR Number"
+                value={formData.transactionId}
+                onChange={handleChange}
+                className="w-full bg-transparent p-3.5 text-sm text-gray-700 outline-none placeholder-gray-400 font-light"
+                required
+              />
+            </div>
+
+            {/* Image Screenshot Upload Mask Row */}
+            <div className="relative flex items-center w-full border border-[#e0d3c1] bg-[#fffbf7] rounded-xl overflow-hidden">
+              <span className="pl-4 pr-2 text-gray-400">📎</span>
+              <label className="bg-[#7A0016] text-white px-3 sm:px-4 py-2 text-[11px] font-semibold uppercase tracking-wider rounded-lg my-1.5 ml-2 cursor-pointer hover:bg-[#610112] transition-colors whitespace-nowrap">
+                Choose File
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setScreenshot(e.target.files[0])}
+                  className="hidden"
+                  required
+                />
+              </label>
+              <span className="text-xs text-gray-400 ml-3 truncate pr-4">
+                {screenshot ? screenshot.name : "Add Payment Screenshot (UPI)"}
+              </span>
+            </div>
+
+            {/* Submission Trigger */}
             <button
               type="submit"
-              className="w-full bg-gray-900 text-white py-3 rounded-lg font-semibold hover:bg-gray-800 transition-colors"
+              className="w-full bg-[#7A0016] text-white py-4 mt-4 rounded-xl text-sm font-semibold tracking-[2px] uppercase shadow-md hover:bg-[#610112] transition-all flex items-center justify-center gap-2 cursor-pointer outline-none"
             >
-              Place Order
+              <span>🛍️</span> PLACE ORDER
             </button>
           </form>
         </div>
+
       </div>
     </div>
   );

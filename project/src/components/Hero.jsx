@@ -11,33 +11,33 @@ export default function Hero() {
       title: "Curated Gift Hampers",
       subtitle: "Handcrafted selections for your special occasions",
       image: "/gift4.jpeg",
-      route: "/products?category=curated-hampers"
+      route: "/products"
     },
     {
       title: "Handmade Keepsakes",
       subtitle: "Beautiful treasures where gifting feels personal",
       image: "/gift2.jpeg",
-      route: "/products?category=handmade-keepsakes"
+      route: "/products"
     },
     {
       title: "Premium Luxury Boxes",
       subtitle: "Unwrap joy with customized decorations & premium ribbons",
       image: "/gift3.jpeg",
-      route: "/products?category=premium-gift-boxes"
+      route: "/products"
     },
     {
       title: "Custom Ribbons",
       subtitle: "Elegant ribbons designed to elevate every gift wrap",
-      image: "https://images.unsplash.com/photo-1607082349566-187342175e2f?auto=format&fit=crop&w=1200&q=80",
-      route: "/products?category=custom-ribbons"
+      image: "Custom ribbon.jpg",
+      route: "/products"
     },
 
     // NEW SLIDE 5
     {
       title: "Scrunchies & Clips",
       subtitle: "Trendy handmade accessories for everyday style",
-      image: "https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=1200&q=80",
-      route: "/products?category=scrunchies-clips"
+      image: "Clips.jpg",
+      route: "/products"
     }
   ];
 
