@@ -15,6 +15,17 @@ export default function Checkout() {
 
   const [cart, setCart] = useState([]);
   const [total, setTotal] = useState(0);
+  
+  // 🚚 Dynamic Shipping Method State (Default: standard)
+  const [shippingMethod, setShippingMethod] = useState("standard");
+
+  // Shipping Rates Configuration
+  const SHIPPING_RATES = {
+    standard: { label: "Standard Shipping", price: 70, days: "3 days" },
+    express: { label: "Express Shipping ⚡", price: 150, days: "1 days" }
+  };
+
+  const currentShippingCharge = SHIPPING_RATES[shippingMethod].price;
 
   const [formData, setFormData] = useState({
     customerName: "",
@@ -64,10 +75,11 @@ export default function Checkout() {
   };
 
   const handlePayment = () => {
+    // 💳 Payment amount updated dynamically based on selected shipping
     const upiLink =
       `upi://pay?pa=${UPI_ID}` +
       `&pn=Gift Store` +
-      `&am=${total}` +
+      `&am=${total + currentShippingCharge}` +
       `&cu=INR`;
 
     window.location.href = upiLink;
@@ -106,7 +118,8 @@ export default function Checkout() {
         products: cart
           .map((item) => `${item.name} x ${item.quantity}`)
           .join(", "),
-        total,
+        shippingMethod: SHIPPING_RATES[shippingMethod].label, // 🚚 Passed Selected Shipping Type to DB
+        total: total + currentShippingCharge, // 📦 Saved dynamic final Grand Total in DB
         transactionId: formData.transactionId,
         paymentScreenshot: screenshotUrl,
         orderDate: new Date().toLocaleString(),
@@ -173,7 +186,7 @@ export default function Checkout() {
           </div>
 
           {/* Dynamic Products Loop Grid */}
-          <div className="space-y-4 mb-6 max-h-[350px] overflow-y-auto pr-1">
+          <div className="space-y-4 mb-4 max-h-[250px] overflow-y-auto pr-1">
             {cart.map((item) => (
               <div key={item.id} className="flex items-center justify-between text-[#3b3b3b] font-medium text-sm gap-2">
                 <div className="flex items-center gap-3 sm:gap-4 min-w-0">
@@ -195,9 +208,62 @@ export default function Checkout() {
             ))}
           </div>
 
-          <div className="flex justify-between items-center text-md font-bold text-[#7A0016] pt-4 border-t border-[#f6efe7] mb-6">
-            <span className="font-serif tracking-wide uppercase">Total</span>
-            <span className="text-lg sm:text-xl">₹{total}</span>
+          {/* 🚚 Shipping Method Header Label */}
+          <h3 className="text-sm font-semibold text-gray-800 mt-5 mb-3 font-sans">Shipping Method</h3>
+
+          {/* 📦 Interactive Shipping Options Container */}
+          <div className="space-y-3 mb-5">
+            {/* Standard Shipping Option */}
+            <div 
+              onClick={() => setShippingMethod("standard")}
+              className={`border rounded-2xl p-4 flex justify-between items-center text-[#3b3b3b] cursor-pointer transition-all shadow-sm ${
+                shippingMethod === "standard" 
+                  ? "border-[#7A0016] bg-[#fdf2f4] ring-1 ring-[#7A0016]" 
+                  : "border-[#e5d5c0] bg-white hover:border-gray-400"
+              }`}
+            >
+              <div className="space-y-0.5">
+                <h4 className="font-bold text-sm sm:text-base text-gray-900">Standard Shipping</h4>
+                <p className="text-xs sm:text-sm text-gray-500 font-normal">Ships in 3 days</p>
+              </div>
+              <span className="font-bold text-gray-900 text-sm sm:text-base shrink-0">₹70</span>
+            </div>
+
+            {/* Express Shipping Option */}
+            <div 
+              onClick={() => setShippingMethod("express")}
+              className={`border rounded-2xl p-4 flex justify-between items-center text-[#3b3b3b] cursor-pointer transition-all shadow-sm ${
+                shippingMethod === "express" 
+                  ? "border-[#7A0016] bg-[#fdf2f4] ring-1 ring-[#7A0016]" 
+                  : "border-[#e5d5c0] bg-white hover:border-gray-400"
+              }`}
+            >
+              <div className="space-y-0.5">
+                <div className="flex items-center gap-1.5">
+                  <h4 className="font-bold text-sm sm:text-base text-gray-900">Express Shipping</h4>
+                  <span className="text-yellow-500 text-sm">⚡</span>
+                </div>
+                <p className="text-xs sm:text-sm text-gray-500 font-normal">Ships in 1 days</p>
+              </div>
+              <span className="font-bold text-gray-900 text-sm sm:text-base shrink-0">₹150</span>
+            </div>
+          </div>
+
+          {/* Dynamic Order breakdown bill lines */}
+          <div className="space-y-2 pt-2 border-t border-[#f6efe7] text-xs sm:text-sm text-gray-500 font-medium">
+            <div className="flex justify-between">
+              <span>Subtotal</span>
+              <span className="text-gray-800">₹{total}.00</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Shipping</span>
+              <span className="text-gray-800">₹{currentShippingCharge}.00</span>
+            </div>
+          </div>
+
+          <div className="flex justify-between items-center text-md font-bold text-[#7A0016] pt-3 mt-3 border-t border-dashed border-gray-200 mb-6">
+            <span className="font-serif tracking-wide uppercase">Grand Total</span>
+            <span className="text-lg sm:text-xl">₹{total + currentShippingCharge}.00</span>
           </div>
 
           <div className="w-full flex items-center justify-center gap-3 my-4 opacity-50">

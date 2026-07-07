@@ -46,31 +46,31 @@ export default function Contact() {
               <div className="bg-[#fffaf6] border border-[#f3e1c7] p-4 sm:p-6 rounded-2xl shadow-sm text-center flex flex-col items-center justify-center gap-1 sm:gap-2 hover:scale-[1.02] transition-transform">
                   <span className="text-xl sm:text-2xl text-[#7A0016]">📞</span>
                   <h4 className="font-serif font-bold text-[#7A0016] text-sm sm:text-md mt-1">Phone</h4>
-                  <p className="text-[10px] sm:text-sm text-gray-600 font-medium">+91 9876543210</p>
+                  <p className="text-[10px] sm:text-sm text-gray-600 font-medium">+91 9452417747</p>
               </div>
 
               {/* CARD 2: WHATSAPP */}
               <a 
-                  href="https://wa.me/919876543210" 
+                  href="https://wa.me/919452417747" 
                   target="_blank" 
                   rel="noreferrer"
                   className="bg-[#fffaf6] border border-[#f3e1c7] p-4 sm:p-6 rounded-2xl shadow-sm text-center flex flex-col items-center justify-center gap-1 sm:gap-2 hover:scale-[1.02] transition-transform no-underline"
               >
                   <span className="text-xl sm:text-2xl text-[#7A0016]">💬</span>
                   <h4 className="font-serif font-bold text-[#7A0016] text-sm sm:text-md mt-1">WhatsApp</h4>
-                  <p className="text-[10px] sm:text-sm text-gray-600 font-medium">+91 9876543210</p>
+                  <p className="text-[10px] sm:text-sm text-gray-600 font-medium">+91 9452417747</p>
               </a>
 
               {/* CARD 3: EMAIL */}
               <div className="bg-[#fffaf6] border border-[#f3e1c7] p-4 sm:p-6 rounded-2xl shadow-sm text-center flex flex-col items-center justify-center gap-1 sm:gap-2 hover:scale-[1.02] transition-transform">
                   <span className="text-xl sm:text-2xl text-[#7A0016]">✉️</span>
                   <h4 className="font-serif font-bold text-[#7A0016] text-sm sm:text-md mt-1">Email</h4>
-                  <p className="text-[10px] sm:text-sm text-gray-600 font-medium truncate w-full">hello@cherryside.in</p>
+                  <p className="text-[10px] sm:text-sm text-gray-600 font-medium truncate w-full">teamcherryside@gmail.com</p>
               </div>
 
               {/* CARD 4: INSTAGRAM */}
               <a 
-                  href="https://instagram.com/cherryside" 
+                  href="https://instagram.com/cherryside._" 
                   target="_blank" 
                   rel="noreferrer"
                   className="bg-[#fffaf6] border border-[#f3e1c7] p-4 sm:p-6 rounded-2xl shadow-sm text-center flex flex-col items-center justify-center gap-1 sm:gap-2 hover:scale-[1.02] transition-transform no-underline"
@@ -81,7 +81,7 @@ export default function Contact() {
                       <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
                   </svg>
                   <h4 className="font-serif font-bold text-[#7A0016] text-sm sm:text-md mt-1">Instagram</h4>
-                  <p className="text-[10px] sm:text-sm text-[#7A0016] font-semibold">@cherryside</p>
+                  <p className="text-[10px] sm:text-sm text-[#7A0016] font-semibold">@cherryside._</p>
               </a>
           </div>
 
