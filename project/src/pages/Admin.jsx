@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 // 1. ProductCard component ko import kiya
 import ProductCard from "../components/ProductCard";
+// React Toastify ko import kiya
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const API_URL = import.meta.env.VITE_GOOGLE_SHEETS_API_URL;
 const CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
@@ -27,6 +30,7 @@ export default function AdminPanel() {
       setProducts(data);
     } catch (err) {
       console.error("Error fetching products:", err);
+      toast.error("Failed to load products");
     }
   };
 
@@ -57,44 +61,55 @@ export default function AdminPanel() {
       const data = await res.json();
       if (data.secure_url) {
         setProduct((prev) => ({ ...prev, image: data.secure_url }));
+        toast.success("Image Uploaded Successfully");
       } else {
-        alert("Image Upload Failed");
+        toast.error("Image Upload Failed");
       }
     } catch (err) {
       console.error("Cloudinary error:", err);
-      alert("Image Upload Failed");
+      toast.error("Image Upload Failed");
     }
     setLoading(false);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!product.image) return alert("Upload image first");
+    if (!product.image) return toast.warning("Upload product image first");
 
-    try {
-      const payload = {
-        type: "product",
-        action: editingId ? "update" : "add",
-        id: editingId || Date.now(),
-        ...product,
-      };
+    // Toast Promise setup kiya loader ke liye
+    const submissionPromise = new Promise(async (resolve, reject) => {
+      try {
+        const payload = {
+          type: "product",
+          action: editingId ? "update" : "add",
+          id: editingId || Date.now(),
+          ...product,
+        };
 
-      const res = await fetch(API_URL, {
-        method: "POST",
-        body: JSON.stringify(payload),
-      });
+        const res = await fetch(API_URL, {
+          method: "POST",
+          body: JSON.stringify(payload),
+        });
 
-      const data = await res.json();
-      if (data.success) {
-        alert(editingId ? "Product Updated Successfully" : "Product Added Successfully");
-        setProduct({ name: "", category: "", price: "", description: "", stock: "", image: "" });
-        setEditingId(null);
-        fetchProducts();
+        const data = await res.json();
+        if (data.success) {
+          setProduct({ name: "", category: "", price: "", description: "", stock: "", image: "" });
+          setEditingId(null);
+          fetchProducts();
+          resolve(data);
+        } else {
+          reject(new Error("API returned success false"));
+        }
+      } catch (error) {
+        reject(error);
       }
-    } catch (error) {
-      console.error("Submission error:", error);
-      alert("Failed to submit data");
-    }
+    });
+
+    toast.promise(submissionPromise, {
+      pending: "Processing, please wait...",
+      success: editingId ? "Product Updated Successfully 👌" : "Product Added Successfully 👌",
+      error: "Failed to submit data 🤯",
+    });
   };
 
   const handleEdit = (item) => {
@@ -110,22 +125,60 @@ export default function AdminPanel() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm("Delete this product?")) return;
-    try {
-      const res = await fetch(API_URL, {
-        method: "POST",
-        body: JSON.stringify({ type: "product", action: "delete", id }),
-      });
-      const data = await res.json();
-      if (data.success) {
-        alert("Product Deleted Successfully");
-        fetchProducts();
+  // Toast confirm hone par delete function trigger hoga
+  const confirmDeleteAction = async (id, toastId) => {
+    toast.dismiss(toastId); // Confirmation toast ko band karo
+
+    const deletePromise = new Promise(async (resolve, reject) => {
+      try {
+        const res = await fetch(API_URL, {
+          method: "POST",
+          body: JSON.stringify({ type: "product", action: "delete", id }),
+        });
+        const data = await res.json();
+        if (data.success) {
+          fetchProducts();
+          resolve(data);
+        } else {
+          reject(new Error("Delete failed"));
+        }
+      } catch (error) {
+        reject(error);
       }
-    } catch (error) {
-      console.error("Delete error:", error);
-      alert("Delete Failed");
-    }
+    });
+
+    toast.promise(deletePromise, {
+      pending: "Deleting product...",
+      success: "Product Deleted Successfully 🗑️",
+      error: "Delete Failed 🤯",
+    });
+  };
+
+  // Browser confirm alert ko delete karke Custom Toast banaya
+  const handleDelete = (id) => {
+    toast((t) => (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+        <p style={{ margin: 0, fontWeight: '600' }}>Want to delete this product?</p>
+        <div style={{ display: 'flex', gap: '8px', alignSelf: 'flex-end' }}>
+          <button 
+            onClick={() => toast.dismiss(t.id)} 
+            style={{ border: '1px solid #7A0016', color: '#7A0016', backgroundColor: 'transparent', padding: '4px 10px', borderRadius: '4px', fontSize: '12px', cursor: 'pointer' }}
+          >
+            Cancel
+          </button>
+          <button 
+            onClick={() => confirmDeleteAction(id, t.id)} 
+            style={{ border: 'none', color: '#ffffff', backgroundColor: '#7A0016', padding: '4px 10px', borderRadius: '4px', fontSize: '12px', cursor: 'pointer' }}
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    ), {
+      autoClose: false, // User jab tak action na le tab tak toast rahega
+      closeOnClick: false,
+      draggable: false
+    });
   };
 
   const cancelEdit = () => {

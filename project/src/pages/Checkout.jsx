@@ -1,3 +1,4 @@
+// Checkout.jsx
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getCart, getCartTotal, clearCart } from "../../services/cart";
@@ -8,7 +9,6 @@ import { ToastContainer, toast } from "react-toastify";
 const API_URL = import.meta.env.VITE_GOOGLE_SHEETS_API_URL;
 const CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
 const UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
-const UPI_ID = import.meta.env.VITE_UPI_ID;
 
 export default function Checkout() {
   const navigate = useNavigate();
@@ -26,6 +26,9 @@ export default function Checkout() {
   };
 
   const currentShippingCharge = SHIPPING_RATES[shippingMethod].price;
+
+  // 🔥 NAYA VARIABLE: Total aur Shipping ko jod kar grandTotal banaya
+  const grandTotal = total + currentShippingCharge;
 
   const [formData, setFormData] = useState({
     customerName: "",
@@ -74,15 +77,13 @@ export default function Checkout() {
     return result.secure_url;
   };
 
-  const handlePayment = () => {
-    // 💳 Payment amount updated dynamically based on selected shipping
-    const upiLink =
-      `upi://pay?pa=${UPI_ID}` +
-      `&pn=Gift Store` +
-      `&am=${total + currentShippingCharge}` +
-      `&cu=INR`;
-
-    window.location.href = upiLink;
+  // 🔄 UPDATED: Ab yeh function upi-payment page par grandTotal lekar jayega
+  const handlePaymentRedirect = () => {
+    navigate("/upi-payment", { 
+      state: { 
+        total: grandTotal
+      } 
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -119,7 +120,7 @@ export default function Checkout() {
           .map((item) => `${item.name} x ${item.quantity}`)
           .join(", "),
         shippingMethod: SHIPPING_RATES[shippingMethod].label, // 🚚 Passed Selected Shipping Type to DB
-        total: total + currentShippingCharge, // 📦 Saved dynamic final Grand Total in DB
+        total: grandTotal, // 📦 Saved dynamic final Grand Total in DB
         transactionId: formData.transactionId,
         paymentScreenshot: screenshotUrl,
         orderDate: new Date().toLocaleString(),
@@ -263,7 +264,7 @@ export default function Checkout() {
 
           <div className="flex justify-between items-center text-md font-bold text-[#7A0016] pt-3 mt-3 border-t border-dashed border-gray-200 mb-6">
             <span className="font-serif tracking-wide uppercase">Grand Total</span>
-            <span className="text-lg sm:text-xl">₹{total + currentShippingCharge}.00</span>
+            <span className="text-lg sm:text-xl">₹{grandTotal}.00</span>
           </div>
 
           <div className="w-full flex items-center justify-center gap-3 my-4 opacity-50">
@@ -272,13 +273,14 @@ export default function Checkout() {
             <span className="h-[1px] w-12 bg-gray-300"></span>
           </div>
 
+          {/* 🔄 UPDATED: Ab yeh button click hone par handlePaymentRedirect function chalega jo sirf grandTotal pass karega */}
           <button
-            onClick={handlePayment}
+            onClick={handlePaymentRedirect}
             className="w-full bg-[#7A0016] text-white py-3.5 rounded-xl font-semibold hover:bg-[#610112] transition-all flex items-center justify-center shadow-md outline-none cursor-pointer"
           >
             <img
               src="upi_logo.webp" 
-              alt="Google Pay"
+              alt="UPI Payment"
               className="h-8 w-auto object-contain"
             />
           </button>

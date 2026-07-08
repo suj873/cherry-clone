@@ -12,9 +12,11 @@ import Admin from "./pages/Admin";
 import About from "./pages/About";
 import Policy from "./pages/Policies";
 import Contact from "./pages/Contact";
+import Upipayment from "./pages/Upipayment";
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+
 
 export default function App() {
   return (
@@ -36,6 +38,7 @@ export default function App() {
           <Route path="/about" element={<About />} />
           <Route path="/policies" element={<Policy />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/upi-payment" element={<Upipayment />} />
         </Routes>
       </div>
 

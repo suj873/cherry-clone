@@ -34,14 +34,15 @@ export default function Contact() {
       </div>
 
       {/* ==================== CORE GRID LAYOUT CONTENT ==================== */}
-      <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+      <div className="max-w-2xl mx-auto flex flex-col gap-6 w-full">
         
         {/* LEFT COLUMN: CONTACT INFO CARDS & MAP REPLACEMENT */}
-        <div className="lg:col-span-5 flex flex-col gap-6 w-full">
+        {/* (Note: Left column container classes kept conceptually but adjusted for perfect centering) */}
+        <div className="flex flex-col gap-6 w-full">
           
           {/* 2x2 Interactive Info Grid - Responsive Design */}
           <div className="grid grid-cols-2 gap-3 sm:gap-4">
-                      
+                    
               {/* CARD 1: PHONE */}
               <div className="bg-[#fffaf6] border border-[#f3e1c7] p-4 sm:p-6 rounded-2xl shadow-sm text-center flex flex-col items-center justify-center gap-1 sm:gap-2 hover:scale-[1.02] transition-transform">
                   <span className="text-xl sm:text-2xl text-[#7A0016]">📞</span>

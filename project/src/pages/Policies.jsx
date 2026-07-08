@@ -17,9 +17,9 @@ export default function Policies() {
             We believe in clarity and honesty so your gifting experience stays stress-free.
           </p>
 
-          <div className="mt-6 inline-block bg-white px-5 py-3 rounded-md shadow-sm text-[#7a0016] font-medium">
+          {/* <div className="mt-6 inline-block bg-white px-5 py-3 rounded-md shadow-sm text-[#7a0016] font-medium">
             🚚 Free Shipping on Orders Above ₹999
-          </div>
+          </div> */}
         </div>
 
         {/* Policy Cards */}
@@ -43,8 +43,8 @@ export default function Policies() {
               </li>
 
               <li>
-                <strong>Shipping Charges:</strong> A flat shipping fee of ₹70 applies
-                to orders below ₹999.
+                <strong>Shipping Charges:</strong> A flat shipping fee of ₹70 or ₹150 applies based on your Shipping Methods.
+                {/* to orders below ₹999. */}
               </li>
 
               <li>
