@@ -1,20 +1,27 @@
-// Upipayment.jsx 
+// Upipayment.jsx
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
-export default function UPIPayment({ total = 0 }) {
+export default function UPIPayment() {
   const navigate = useNavigate();
+  const location = useLocation();
   const UPI_ID = import.meta.env.VITE_UPI_ID || "cherryside@upi";
-  const finalAmount = total; // No shipping charges anywhere
 
-  // Track karega ki payment app kholi gayi hai ya nahi
+  // ✅ Total ab route state se aayega (Checkout se navigate() ke through bheja gaya)
+  const finalAmount = location.state?.total || 0;
+
+  // Agar koi direct is page pe aa jaye (refresh / direct URL) to total 0 hoga -> checkout bhej do
+  useEffect(() => {
+    if (!finalAmount || finalAmount <= 0) {
+      navigate("/checkout");
+    }
+  }, [finalAmount, navigate]);
+
   const [isPaymentInitiated, setIsPaymentInitiated] = useState(false);
 
-  // 🔄 Detection Logic: Jaise hi user app se wapas browser me active hoga
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (document.visibilityState === "visible" && isPaymentInitiated) {
-        // Direct checkout route par navigate karega jab user back aayega
         navigate("/checkout");
       }
     };
@@ -28,7 +35,8 @@ export default function UPIPayment({ total = 0 }) {
     let deepLink = baseLink;
 
     switch (appType) {
-      case "gpay": deepLink = baseLink.replace("upi://", "gpay://"); break;
+      // ✅ GPay ka correct scheme: gpay://upi/pay?... (upi:// ke baad extra /upi/ segment)
+      case "gpay": deepLink = baseLink.replace("upi://", "gpay://upi/"); break;
       case "phonepe": deepLink = baseLink.replace("upi://", "phonepe://"); break;
       case "paytm": deepLink = baseLink.replace("upi://", "paytmmp://"); break;
       default: deepLink = baseLink; break;
@@ -41,8 +49,7 @@ export default function UPIPayment({ total = 0 }) {
   return (
     <div className="min-h-screen bg-[#FDF7EE] py-12 px-4 sm:px-6 lg:px-8 font-sans flex items-center justify-center">
       <div className="max-w-md w-full bg-[#fffaf6] border border-[#f3e1c7] p-6 sm:p-8 rounded-3xl shadow-sm text-center">
-        
-        {/* ==================== STATE 1: SELECT UPI APP ==================== */}
+
         {!isPaymentInitiated ? (
           <>
             <span className="text-4xl">🍒</span>
@@ -73,11 +80,11 @@ export default function UPIPayment({ total = 0 }) {
                   className="w-full bg-[#fffbf7] border border-[#e0d3c1] text-[#7A0016] py-3 px-5 rounded-xl font-medium hover:bg-[#7A0016] hover:text-white hover:border-[#7A0016] transition-all flex items-center justify-between shadow-sm outline-none cursor-pointer group"
                 >
                   <div className="flex items-center gap-4">
-                    <img 
-                      src={app.logo} 
-                      alt={app.label} 
+                    <img
+                      src={app.logo}
+                      alt={app.label}
                       className="h-6 w-12 object-contain filter group-hover:brightness-0 group-hover:invert transition-all"
-                      onError={(e) => { e.target.style.display = 'none'; }} 
+                      onError={(e) => { e.target.style.display = 'none'; }}
                     />
                     <span className="text-sm font-semibold tracking-wide">{app.label}</span>
                   </div>
@@ -87,12 +94,11 @@ export default function UPIPayment({ total = 0 }) {
             </div>
           </>
         ) : (
-          /* ==================== STATE 2: REDIRECTING STATE ==================== */
           <div className="py-10 space-y-4">
             <div className="w-12 h-12 border-4 border-[#7A0016] border-t-transparent rounded-full animate-spin mx-auto"></div>
             <h3 className="font-serif text-xl font-bold text-[#7A0016]">Opening Payment App...</h3>
             <p className="text-xs text-gray-500 max-w-xs mx-auto">
-              Bhai, app se payment karke screenshot le lo. Jab tum wapas browser me aaoge, page automatically checkout par chala jayega.
+              Complete the payment in the app and take a screenshot. Once you return to the browser, this page will automatically redirect to checkout.
             </p>
             <button
               onClick={() => navigate("/checkout")}
